@@ -8,6 +8,13 @@ const createUserIntoDb = async (payload: Partial<IUser>) => {
 }
 
 
+const getAllUsersIntoDb = async () => {
+    const users = await User.find();
+    return users;
+}
+
+
 export const userService = {
-    createUserIntoDb
+    createUserIntoDb,
+    getAllUsersIntoDb
 };
