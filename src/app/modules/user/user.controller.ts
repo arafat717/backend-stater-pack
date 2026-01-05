@@ -1,21 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from 'http-status-codes';
-import { User } from "./user.model";
+import { userService } from "./user.service";
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email, password } = req.body;
-        const user = await User.create({ email, password });
+        const user = await userService.createUserIntoDb(req.body);
         res.status(StatusCodes.CREATED).json({
             message: "User created successfully",
             user
         });
     } catch (err: any) {
-        res.status(StatusCodes.BAD_REQUEST).json({
-            message: "Internal Server Error",
-            err
-        })
+        next(err);
     }
 }
 

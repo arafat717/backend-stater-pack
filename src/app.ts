@@ -1,6 +1,11 @@
-import express, { Request, Response } from "express";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import router from "./app/router";
+import { gobalErrorHandler } from "./app/middlewares/gobalErrorHandler";
+import { notFound } from "./app/middlewares/notFount";
+
 
 const app = express()
 
@@ -17,5 +22,12 @@ app.get("/", (req: Request, res: Response) => {
         message: "Welcome to Tour Management System Backend"
     })
 })
+
+
+app.use(gobalErrorHandler)
+
+app.use(notFound)
+
+
 
 export default app
