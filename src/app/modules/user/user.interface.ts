@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export interface IAuthProvider {
-    provider: string;
+    provider: 'google' | 'credentials';
     providerId: string;
 }
 
@@ -17,6 +17,7 @@ export enum Role {
     USER = 'USER',
     GUIDE = 'GUIDE'
 }
+
 export interface IUser {
     name: string;
     email: string;

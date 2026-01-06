@@ -6,7 +6,6 @@ import { envVars } from "./app/config/env";
 
 let server: Server;
 
-
 const startServer = async () => {
     try {
         await mongoose.connect(envVars.DB_URL)
@@ -46,7 +45,6 @@ process.on("SIGINT", () => {
 
     process.exit(1)
 })
-
 
 process.on("unhandledRejection", (err) => {
     console.log("Unhandled Rejecttion detected... Server shutting down..", err);
