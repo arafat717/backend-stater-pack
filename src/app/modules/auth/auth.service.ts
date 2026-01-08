@@ -5,7 +5,8 @@ import { genarateToken } from "../../utils/jwt";
 import { IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import bcrypt from "bcryptjs";
-import jwt from 'jsonwebtoken'
+
+
 
 const userLogin = async (payload: Partial<IUser>) => {
     const { email, password } = payload;
@@ -36,6 +37,7 @@ const userLogin = async (payload: Partial<IUser>) => {
         accessToken
     };
 }
+
 
 
 export const authService = {

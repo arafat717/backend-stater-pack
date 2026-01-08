@@ -12,7 +12,6 @@ export const seedSuperAdmin = async () => {
         }
 
         const hashedPassword = bcrypt.hashSync(envVars.SUPER_ADMIN_PASSWORD!, 12);
-
         const superAdmin = await User.create({
             name: "Super Admin",
             email: envVars.SUPER_ADMIN_EMAIL,

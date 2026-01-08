@@ -32,6 +32,8 @@ export const checkAuth = (...authRoles: string[]) => async (req: Request, res: R
             throw new Error("Forbidden access");
         }
 
+        req.user = decoded
+
         next();
     } catch (error) {
         next(error);
