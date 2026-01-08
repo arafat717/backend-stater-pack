@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { envVars } from "../../config/env";
+import { genarateToken } from "../../utils/jwt";
 import { IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import bcrypt from "bcryptjs";
@@ -28,7 +30,7 @@ const userLogin = async (payload: Partial<IUser>) => {
         role: isUserExist.role
     };
 
-    const accessToken = jwt.sign(tokenPayload, "tourmanagement", { expiresIn: "1d" });
+    const accessToken = genarateToken(tokenPayload, envVars.JWT_SECRET!, envVars.JWT_EXPIRES_IN!);
 
     return {
         accessToken
