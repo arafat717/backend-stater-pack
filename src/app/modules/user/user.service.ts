@@ -1,18 +1,22 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { IAuthProvider, IUser } from "./user.interface";
 import { User } from "./user.model";
+import bcrypt from "bcryptjs";
 
 const createUserIntoDb = async (payload: Partial<IUser>) => {
-    const { email, ...rest } = payload;
+    const { email, password, ...rest } = payload;
 
     const isEmailExist = await User.findOne({ email });
     if (isEmailExist) {
         throw new Error("Email already exists");
     }
 
-    const authProvider: IAuthProvider = {provider: 'credentials', providerId: email!};
+    const hashedPassword = await bcrypt.hash(password!, 12);
 
-    const user = await User.create({ email, auths: [authProvider], ...rest });
+
+    const authProvider: IAuthProvider = { provider: 'credentials', providerId: email! };
+
+    const user = await User.create({ email, password: hashedPassword, auths: [authProvider], ...rest });
     return user;
 }
 
