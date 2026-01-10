@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
 import { envVars } from '../config/env';
+import { IUser } from '../modules/user/user.interface';
 
 
 export const genarateToken = (payload: JwtPayload, secret: string, expiresIn: string) => {
@@ -37,5 +38,22 @@ export const checkAuth = (...authRoles: string[]) => async (req: Request, res: R
         next();
     } catch (error) {
         next(error);
+    }
+}
+
+
+export const createUserToken = (user: Partial<IUser>) => {
+    const tokenPayload = {
+        id: user._id,
+        email: user.email,
+        role: user.role
+    };
+
+    const accessToken = genarateToken(tokenPayload, envVars.JWT_SECRET as string, envVars.JWT_EXPIRES_IN as string);
+    const refreshToken = genarateToken(tokenPayload, envVars.JWT_REFRESH_SECRET as string, envVars.JWT_REFRESH_EXPIRE_IN as string)
+
+    return {
+        accessToken,
+        refreshToken
     }
 }

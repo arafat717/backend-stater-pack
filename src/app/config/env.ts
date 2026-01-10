@@ -8,13 +8,14 @@ interface EnvConfig {
     NODE_ENV: "development" | "production",
     JWT_EXPIRES_IN?: string,
     JWT_SECRET?: string,
-    JWT_ACCESS_SECRET?: string,
     SUPER_ADMIN_EMAIL?: string,
-    SUPER_ADMIN_PASSWORD?: string
+    SUPER_ADMIN_PASSWORD?: string,
+    JWT_REFRESH_SECRET?:string,
+    JWT_REFRESH_EXPIRE_IN?:string
 }
 
 const loadEnvVariables = (): EnvConfig => {
-    const requiredEnvVariables: string[] = ["PORT", "DB_URL", "NODE_ENV", "JWT_SECRET", "JWT_ACCESS_SECRET", "JWT_EXPIRES_IN", "SUPER_ADMIN_EMAIL", "SUPER_ADMIN_PASSWORD"];
+    const requiredEnvVariables: string[] = ["PORT", "DB_URL", "NODE_ENV", "JWT_SECRET", "JWT_EXPIRES_IN", "SUPER_ADMIN_EMAIL", "SUPER_ADMIN_PASSWORD","JWT_REFRESH_EXPIRE_IN","JWT_REFRESH_SECRET"];
 
     requiredEnvVariables.forEach(key => {
         if (!process.env[key]) {
@@ -29,9 +30,10 @@ const loadEnvVariables = (): EnvConfig => {
         NODE_ENV: process.env.NODE_ENV as "development" | "production",
         JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
         JWT_SECRET: process.env.JWT_SECRET,
-        JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
         SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL,
-        SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD
+        SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD,
+        JWT_REFRESH_SECRET:process.env.JWT_REFRESH_SECRET,
+        JWT_REFRESH_EXPIRE_IN:process.env.JWT_REFRESH_EXPIRE_IN
     }
 }
 

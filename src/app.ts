@@ -5,11 +5,12 @@ import cors from "cors";
 import router from "./app/router";
 import { gobalErrorHandler } from "./app/middlewares/gobalErrorHandler";
 import { notFound } from "./app/middlewares/notFount";
+import cookieParser from "cookie-parser";
 
 
 const app = express()
 
-
+app.use(cookieParser())
 app.use(express.json())
 app.use(cors())
 
