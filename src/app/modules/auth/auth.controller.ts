@@ -61,11 +61,33 @@ const logout = catchAsync(async (req: Request, res: Response, next: NextFunction
         message: "Refresh token created successfully!",
         data: undefined
     });
+
 });
+
+
+const changePassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const newPassword = req.body.newPassword;
+    const oldPassword = req.body.oldPassword;
+    const decodedToken = req.user;
+    console.log(decodedToken)
+
+    await authService.changePassword(oldPassword, newPassword, decodedToken);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Password Changed successfully!",
+        data: undefined
+    });
+
+});
+
 
 
 export const AuthController = {
     loginUser,
     createNewAccessToken,
-    logout
+    logout,
+    changePassword
 };

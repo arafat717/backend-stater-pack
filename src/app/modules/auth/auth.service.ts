@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { JwtPayload } from "jsonwebtoken";
 import { envVars } from "../../config/env";
 import { createUserToken, genarateToken, verifyToken } from "../../utils/jwt";
 import { isActive, IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
+import AppError from "../../errorHelpers/appError";
+import httpsStatus from 'http-status-codes'
 import bcrypt from "bcryptjs";
-
 
 
 const userLogin = async (payload: Partial<IUser>) => {
@@ -24,15 +26,6 @@ const userLogin = async (payload: Partial<IUser>) => {
     if (!isPasswordValid) {
         throw new Error("Incorrect password");
     }
-
-    // const tokenPayload = {
-    //     id: isUserExist._id,
-    //     email: isUserExist.email,
-    //     role: isUserExist.role
-    // };
-
-    // const accessToken = genarateToken(tokenPayload, envVars.JWT_SECRET!, envVars.JWT_EXPIRES_IN!);
-    // const refreshToken = genarateToken(tokenPayload, envVars.JWT_REFRESH_SECRET as string, envVars.JWT_REFRESH_EXPIRE_IN as string)
 
     const accessToken = createUserToken(isUserExist)
     const refreshToken = createUserToken(isUserExist)
@@ -79,11 +72,31 @@ const createNewAccessToken = async (refreshToken: string) => {
 }
 
 
+const changePassword = async (oldPassword: string, newPassword: string, decodedToken: JwtPayload) => {
+    console.log("old pass ==>", oldPassword)
+    const user = await User.findById(decodedToken.id)
+    console.log("user ==>", user?.password)
+
+    const isPasswordValid = await bcrypt.compare(oldPassword as string, user!.password as string);
+    console.log(isPasswordValid)
+    if (!isPasswordValid) {
+        throw new AppError(httpsStatus.UNAUTHORIZED, `Old Password does not match!`);
+    }
+
+    user!.password = await bcrypt.hash(newPassword, 12)
+    user!.save()
+
+    return true
+
+}
+
+
 
 
 
 
 export const authService = {
     userLogin,
-    createNewAccessToken
+    createNewAccessToken,
+    changePassword
 };
