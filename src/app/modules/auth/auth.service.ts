@@ -52,7 +52,7 @@ const createNewAccessToken = async (refreshToken: string) => {
     const token = verifyToken(refreshToken, envVars.JWT_REFRESH_SECRET as string)
 
     const isUserExist = await User.findOne({ email: token.email });
-    
+
     if (!isUserExist) {
         throw new Error("User does not exist");
     }
@@ -77,6 +77,9 @@ const createNewAccessToken = async (refreshToken: string) => {
         accessToken
     };
 }
+
+
+
 
 
 

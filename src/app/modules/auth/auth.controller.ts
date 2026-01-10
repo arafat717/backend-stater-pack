@@ -12,7 +12,7 @@ const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunct
         httpOnly: true,
         secure: false
     })
-    
+
     res.cookie('accessToken', user.accessToken, {
         httpOnly: true,
         secure: false
@@ -30,7 +30,10 @@ const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunct
 const createNewAccessToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = req.cookies.refreshToken;
     const user = await authService.createNewAccessToken(refreshToken as string);
-
+    res.cookie('accessToken', user.accessToken, {
+        httpOnly: true,
+        secure: false
+    })
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
@@ -40,7 +43,29 @@ const createNewAccessToken = catchAsync(async (req: Request, res: Response, next
 });
 
 
+const logout = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    res.clearCookie('accessToken', {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax"
+    })
+    res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax"
+    })
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Refresh token created successfully!",
+        data: undefined
+    });
+});
+
+
 export const AuthController = {
     loginUser,
-    createNewAccessToken
+    createNewAccessToken,
+    logout
 };
