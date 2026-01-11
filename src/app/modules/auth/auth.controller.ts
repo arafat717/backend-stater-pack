@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { authService } from "./auth.service";
 import { StatusCodes } from "http-status-codes";
 import { sendResponse } from "../../utils/sendResponse";
+import { JwtPayload } from "jsonwebtoken";
 
 const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const user = await authService.userLogin(req.body);
@@ -70,9 +72,8 @@ const changePassword = catchAsync(async (req: Request, res: Response, next: Next
     const newPassword = req.body.newPassword;
     const oldPassword = req.body.oldPassword;
     const decodedToken = req.user;
-    console.log(decodedToken)
 
-    await authService.changePassword(oldPassword, newPassword, decodedToken);
+    await authService.changePassword(oldPassword, newPassword, decodedToken as JwtPayload);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
