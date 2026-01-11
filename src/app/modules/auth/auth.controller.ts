@@ -6,6 +6,10 @@ import { authService } from "./auth.service";
 import { StatusCodes } from "http-status-codes";
 import { sendResponse } from "../../utils/sendResponse";
 import { JwtPayload } from "jsonwebtoken";
+import AppError from "../../errorHelpers/appError";
+import httpStatus from "http-status-codes"
+import { createUserToken } from "../../utils/jwt";
+import { envVars } from "../../config/env";
 
 const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const user = await authService.userLogin(req.body);
@@ -85,10 +89,45 @@ const changePassword = catchAsync(async (req: Request, res: Response, next: Next
 });
 
 
+const googleCallbackController = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const user = req.user;
+    let redirectTo = req.query.state ? req.query.state as string : ""
+
+    if (redirectTo.startsWith('/')) {
+        redirectTo = redirectTo.slice(1)
+    }
+
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, "User Not Found")
+    }
+    const tokenInfo = createUserToken(user)
+    res.cookie('refreshToken', tokenInfo.refreshToken, {
+        httpOnly: true,
+        secure: false
+    })
+    res.cookie('accessToken', tokenInfo.accessToken, {
+        httpOnly: true,
+        secure: false
+    })
+
+    // sendResponse(res, {
+    //     statusCode: StatusCodes.OK,
+    //     success: true,
+    //     message: "Password Changed successfully!",
+    //     data: undefined
+    // });
+
+    res.redirect(`${envVars.FRONTEND_URL}/${redirectTo}`)
+
+});
+
+
 
 export const AuthController = {
     loginUser,
     createNewAccessToken,
     logout,
-    changePassword
+    changePassword,
+    googleCallbackController
 };
